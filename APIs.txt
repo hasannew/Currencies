@@ -1,0 +1,26 @@
+1. CoinGecko
+  Free Trial: Yes
+  Docs Page: https://docs.coingecko.com/v3.0.1/reference/introduction
+  Pricing Page: https://www.coingecko.com/en/api/pricing
+
+2. Coin Market Cap
+  Free Trial: Yes
+  Docs Page:  https://coinmarketcap.com/api/documentation/v1/#
+  Pricing Page: https://coinmarketcap.com/api/pricing/
+
+3. Metals-API 
+  Free Trial: NO
+  Docs Page: https://metals-api.com/documentation
+  Pricing Page: https://metals-api.com/subscription-plan
+  Note: This is the best source of Metals prices (Gold, Silver, Copper, Iron..etc) ever.
+
+4. GoldAPI
+  Free Trial: Free Forever but limited
+  Docs Page: https://www.goldapi.io/dashboard
+  Pricing Page: https://checkout.stripe.com/c/pay/cs_live_a1NIDY1RgiTKBqEWcwkeMd4DvnZWgSKhQvbc13Q2qCL3uXD7oxYBrtjXaI#fidkdWxOYHwnPyd1blppbHNgWjA0Tzc8YkdCfUR%2FXXdLdHZ3MkRXMWxyNG9hdjZITGFEV2pVVnI2XzZWUkdwTkg9NDJHNDVvckI3amFVVDIycDM9bGlzYVZCRElMPWxVVHd9a3c9alFOckZINTVXPFRoQE5TMicpJ2hsYXYnP34naHBsYSc%2FJ0tEJykndmxhJz8nS0QnKSdicGxhJz8nS0QneCknZ2BxZHYnP15YKSdpZHxqcHFRfHVgJz8ndmxrYmlgWmxxYGgnKSd3YGNgd3dgd0p3bGJsayc%2FJ21xcXV2PyoqcnJyK2JqaWFkdWwrbGoneCUl
+  Note: Free Limited Access to Gold and other metals prices
+
+5. MetalpriceAPI
+  Free Trial: Free Daily Credits
+  Docs Page: https://metalpriceapi.com/documentation
+  Pricing Page: https://metalpriceapi.com/pricing
