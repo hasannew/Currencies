@@ -11,7 +11,6 @@ export const googleProvider = {
   },
 };
 const state = "G6AuthenticationWithGoogle";
-//export const authUrl = `${googleProvider.urls.auth_url}?response_type=code&client_id=${googleProvider.credentials.client_id}&redirect_uri=${googleProvider.urls.redirect_uri}&scope=openid%20email%20profile&state=${state}&access_type=offline&prompt=consent`;
 export const authUrl = `${googleProvider.urls.auth_url}?response_type=code&client_id=${googleProvider.credentials.client_id}&redirect_uri=${googleProvider.urls.redirect_uri}&scope=openid%20email%20profile&state=${state}&access_type=offline`;
 export const reCAPTCHA = {
   credintials: {
