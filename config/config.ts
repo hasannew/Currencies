@@ -27,3 +27,7 @@ export const main_urls = {
   //backendUrl: "https://api.chatg6.ai",
   backendUrl: "http://127.0.0.1:8000",
 };
+
+export const connections = {
+ origin:'localhost'
+}

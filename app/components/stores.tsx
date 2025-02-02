@@ -71,7 +71,7 @@ export default function Stores() {
           setIsLoading(false);
     };
     getstores();
-  }, [stores, setStores]);
+  }, []);
 
   useEffect(() => {
     if (search) {

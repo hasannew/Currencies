@@ -2,6 +2,7 @@ import { db } from "@/app/lib/db";
 import { Currency } from "@/app/lib/types";
 import { mean_price, mean_state_price } from "@/app/lib/modifiers";
 import { NextRequest, NextResponse } from "next/server";
+import { connections } from "@/config/config";
 interface mean {
   sale_mean: number;
   purchase_mean: number;
@@ -240,10 +241,11 @@ async function handler(req: NextRequest) {
       sale_percentageChange =
         (100 * (mean.sale_mean - prices[0].sale_price)) / mean.sale_mean;
       purchase_percentageChange =
-        (100 * (mean.purchase_mean - prices[0].purchase_price)) / mean.purchase_mean;
+        (100 * (mean.purchase_mean - prices[0].purchase_price)) /
+        mean.purchase_mean;
       //console.log(sale_percentageChange)
       //console.log(purchase_percentageChange)
-        price = await db.price.update({
+      price = await db.price.update({
         where: {
           id: prices[0].id,
         },
@@ -251,7 +253,9 @@ async function handler(req: NextRequest) {
           date: now,
           sale_price: Number(mean.sale_mean.toFixed(2)),
           purchase_price: Number(mean.purchase_mean.toFixed(2)),
-          purchase_percentageChange: Number(purchase_percentageChange.toFixed(2)),
+          purchase_percentageChange: Number(
+            purchase_percentageChange.toFixed(2)
+          ),
           sale_percentageChange: Number(sale_percentageChange.toFixed(2)),
           sale_std: sale_std,
           purchase_std: purchase_std,
@@ -273,7 +277,9 @@ async function handler(req: NextRequest) {
           date: now,
           sale_price: Number(mean.sale_mean.toFixed(2)),
           purchase_price: Number(mean.purchase_mean.toFixed(2)),
-          purchase_percentageChange: Number(purchase_percentageChange.toFixed(2)),
+          purchase_percentageChange: Number(
+            purchase_percentageChange.toFixed(2)
+          ),
           sale_percentageChange: Number(sale_percentageChange.toFixed(2)),
           sale_std: Number(mean.sale_stdDev.toFixed(2)),
           purchase_std: Number(mean.purchase_stdDev.toFixed(2)),
@@ -284,7 +290,24 @@ async function handler(req: NextRequest) {
         },
       });
     }
+    // WEBSOCKET
+    const new_price = {
+      currency_name:c.name,
+      purchase_percentageChange: Number(purchase_percentageChange.toFixed(2)),
+      sale_percentageChange: Number(sale_percentageChange.toFixed(2)),
+    };
+    const messageObject = {
+      type: "notify",
+      message: JSON.stringify(new_price),
+      timestamp: new Date().toISOString(),
+    };
 
+    // Send the object to WebSocket server
+    const socket = new WebSocket(`ws://${connections.origin}:4000`);
+    socket.onopen = () => {
+      socket.send(JSON.stringify(messageObject));
+      socket.close(); // Close after sending
+    };
     mean_price_all = await mean_price(c.name);
     if (!mean_price_all)
       return NextResponse.json({ message: "Internal Error" }, { status: 500 });
@@ -305,6 +328,7 @@ async function handler(req: NextRequest) {
       products: { connect: products.map((currency) => ({ id: currency.id })) },
     },
   });
+
   console.log("m");
   console.log(refcite);
   console.log(price);

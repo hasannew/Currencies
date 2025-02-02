@@ -151,6 +151,7 @@ const BulletinForm = () => {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    console.log("NEW_VALUE_ADDED")
     if (validateForm()) {
       const bulletinData = {
         ...storeInfo,

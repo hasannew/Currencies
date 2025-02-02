@@ -5,6 +5,7 @@ import { ToastProvider } from "@/app/components/Notification/ToastProvider";
 import Navbar from "./components/navbar";
 import { HeaderAccountPanel } from "./components/HeaderAccountPanel";
 import { Suspense } from "react";
+import WebSocketListener from "./components/websocket/WS";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -36,6 +37,7 @@ export default function RootLayout({
           </Suspense>
         </Navbar>
         {children}
+        <WebSocketListener />
         <ToastProvider />
       </body>
     </html>

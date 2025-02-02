@@ -117,7 +117,7 @@ export default function Prices() {
       setIsLoading(false);
     };
     getbulletins();
-  }, [prices, setPrices]);
+  }, []);
   useEffect(() => {
     if (search) {
       setsearch(true);

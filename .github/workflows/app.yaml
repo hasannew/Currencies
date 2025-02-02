@@ -34,3 +34,6 @@ jobs:
         run: |
           sudo nginx -t && sudo systemctl reload nginx
           pm2 restart all
+      - name: Restart WebSocket Server
+        run: pm2 restart ws-server || pm2 start ./ws_server/server.js --name "ws-server"
+        
