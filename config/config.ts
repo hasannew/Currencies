@@ -29,5 +29,6 @@ export const main_urls = {
 };
 
 export const connections = {
- origin:'localhost'
+ //origin:'localhost'
+ origin:'16.16.54.139'
 }
