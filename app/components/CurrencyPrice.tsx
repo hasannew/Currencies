@@ -68,7 +68,7 @@ const CurrencyPriceComponent = () => {
         sale_percentageChange:p.sale_percentageChange,
         purchase_percentageChange:p.purchase_percentageChange
       })
-      //console.log(data)
+      console.log(data)
      // const prices = data.map((p:any)=>{id:p.id,name:p.name,price:p.sale_price,percentageChange:p.percentageChange,})
       setPrices(prices_now);
       setLoading(false);
@@ -81,7 +81,7 @@ const CurrencyPriceComponent = () => {
   // Set up periodic updates
   useEffect(() => {
     fetchPrices();
-    const interval = setInterval(fetchPrices, 5000); // Update every 5 seconds
+    const interval = setInterval(fetchPrices, 600000); // Update every 5 seconds
 
     return () => clearInterval(interval);
   }, []);

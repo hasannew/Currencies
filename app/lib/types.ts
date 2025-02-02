@@ -11,6 +11,7 @@ export interface formData {
   city?: string;
   address?: string;
   phone?: string;
+  privilges?: string;
 }
 export interface loginformData {
   username: string;
@@ -32,6 +33,7 @@ export interface verifyResponse {
 export interface commonResponse {
   success: boolean;
   message: string;
+  session?: string;
 }
 
 // New types for auth
@@ -71,7 +73,7 @@ export interface bulletin {
 
 export interface currency {
   id: string;
-  [key: string]: string | GLfloat | Store | bulletin[] | Date;
+  [key: string]: string | GLfloat | Store | bulletin[] | Date | null;
 }
 
 export interface Store {

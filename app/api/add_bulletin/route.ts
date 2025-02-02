@@ -240,9 +240,10 @@ async function handler(req: NextRequest) {
       sale_percentageChange =
         (100 * (mean.sale_mean - prices[0].sale_price)) / mean.sale_mean;
       purchase_percentageChange =
-        (100 * (mean.purchase_mean - prices[0].purchase_price)) /
-        mean.purchase_mean;
-      price = await db.price.update({
+        (100 * (mean.purchase_mean - prices[0].purchase_price)) / mean.purchase_mean;
+      //console.log(sale_percentageChange)
+      //console.log(purchase_percentageChange)
+        price = await db.price.update({
         where: {
           id: prices[0].id,
         },
@@ -250,8 +251,8 @@ async function handler(req: NextRequest) {
           date: now,
           sale_price: Number(mean.sale_mean.toFixed(2)),
           purchase_price: Number(mean.purchase_mean.toFixed(2)),
-          purchase_percentageChange: purchase_percentageChange,
-          sale_percentageChange: sale_percentageChange,
+          purchase_percentageChange: Number(purchase_percentageChange.toFixed(2)),
+          sale_percentageChange: Number(sale_percentageChange.toFixed(2)),
           sale_std: sale_std,
           purchase_std: purchase_std,
           max_purchase_price: limits.max_purchase_price,
@@ -272,8 +273,8 @@ async function handler(req: NextRequest) {
           date: now,
           sale_price: Number(mean.sale_mean.toFixed(2)),
           purchase_price: Number(mean.purchase_mean.toFixed(2)),
-          purchase_percentageChange: purchase_percentageChange,
-          sale_percentageChange: sale_percentageChange,
+          purchase_percentageChange: Number(purchase_percentageChange.toFixed(2)),
+          sale_percentageChange: Number(sale_percentageChange.toFixed(2)),
           sale_std: Number(mean.sale_stdDev.toFixed(2)),
           purchase_std: Number(mean.purchase_stdDev.toFixed(2)),
           max_purchase_price: limits.max_purchase_price,

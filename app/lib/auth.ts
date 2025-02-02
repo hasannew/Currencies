@@ -152,7 +152,7 @@ export const login = async (
     expires,
   });
   (await cookies()).set("session", session, { expires, httpOnly: true });
-  return { success: true, message: "logged in" };
+  return { success: true, message: "logged in",session:session };
 };
 
 export const register = async (formData: formData): Promise<commonResponse> => {
@@ -167,7 +167,7 @@ export const register = async (formData: formData): Promise<commonResponse> => {
       message: "Either type,username,email or password is not provided",
     };
   }
-  let newStore;
+  let newStore,newPrev;
   // Check the db for username
   const usernameExists = await db.user.findUnique({
     where: {
@@ -190,7 +190,12 @@ export const register = async (formData: formData): Promise<commonResponse> => {
   const hashedPassword = await hash(formData.password, 10);
   const token = generateSecureKey();
   const tokenExpiry = new Date(Date.now() + settings.tokenExpiracy);
-
+  if (formData.type=='assistant') {
+newPrev = formData.privilges
+  }
+  else {
+    newPrev = "None"
+  }
   const newUser = await db.user.create({
     data: {
       username: formData.username,
@@ -199,6 +204,7 @@ export const register = async (formData: formData): Promise<commonResponse> => {
       token: token,
       tokenExpiracy: tokenExpiry,
       type: formData.type,
+      privilages:newPrev
     },
   });
   if (!newUser) return { success: false, message: "Database error" };

@@ -27,6 +27,7 @@ model User {
   isVerified       Boolean   @default(false)
   verificationDate DateTime?
   type             String    @default("customer")
+  privilages   String?
 }
 
 model OAuthUser {
@@ -65,6 +66,7 @@ model store {
   address    String?    @db.VarChar(50)
   email      String?    @db.VarChar(100)
   phone      String?    @db.VarChar(100)
+  status     String?    @default("inactive")
   currencies String?    @db.VarChar(100)
   createdAt  DateTime   @default(now())
   updatedAt  DateTime?  @updatedAt

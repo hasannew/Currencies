@@ -27,7 +27,7 @@ let sale_percentageChange = 0,purchase_percentageChange = 0;
         },
       },
     });
-    console.log(prices);
+   // console.log(prices);
     i = i + 1;
     now.setDate(now.getDate() - i);
     startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
@@ -47,6 +47,7 @@ purchase_mean = sum2 / prices.length;
 startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 price_all = await db.price.findMany({where:
     {state:'all',
+      name:currency,
         date: {
             gte: startOfDay,
             lte: endOfDay,
@@ -151,6 +152,8 @@ export const mean_state_price = async(currency:string,state:string) =>{
     startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     price_all = await db.price.findMany({where:
         {state:state,
+          city:'all',
+          name:currency,
             date: {
                 gte: startOfDay,
                 lte: endOfDay,

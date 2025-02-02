@@ -8,7 +8,13 @@ async function handler(req: NextRequest) {
   if(!name || !userID){
     return NextResponse.json({message:'Invalid parameters'},{status:400})
   }
-
+     const ex = await db.favorite.findMany({where:{
+      userid:userID,
+      name:name
+     }})
+     if (ex.length!=0) {
+      return NextResponse.json({message:'currency already in favorites'},{status:400})
+     }
      const now = new Date()
       const refcite = await db.favorite.create({
         data:{
