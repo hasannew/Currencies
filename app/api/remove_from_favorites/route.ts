@@ -3,7 +3,12 @@ import { db } from "@/app/lib/db";
 import { NextRequest,NextResponse } from "next/server";
 async function handler(req: NextRequest) {
   
-  const {name, userID} = await req.json()
+  const {name, username} = await req.json()
+  const users = await db.user.findMany({where:{
+    username:username
+  }})
+  console.log(name)
+  const userID = users[0].id
   console.log(name)
   if(!name || !userID){
     return NextResponse.json({message:'Invalid parameters'},{status:400})

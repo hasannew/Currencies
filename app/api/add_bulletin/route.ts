@@ -301,7 +301,7 @@ async function handler(req: NextRequest) {
       message: JSON.stringify(new_price),
       timestamp: new Date().toISOString(),
     };
-
+    console.log(messageObject)
     // Send the object to WebSocket server
     const socket = new WebSocket(`ws://${connections.origin}:4000`);
     socket.onopen = () => {
