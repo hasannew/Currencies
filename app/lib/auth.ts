@@ -366,7 +366,39 @@ export const resetPassword = async (
   if (!updatePassword) return { success: false, message: "Database error" };
   return { success: true, message: "Password reset successfully" };
 };
-
+export const reset_password = async (
+  username: string,
+  password: string
+): Promise<commonResponse> => {
+  if (!username) return { success: false, message: "Email address not provided" };
+  const getUser = await db.user.findUnique({
+    where: {
+      username: username,
+    },
+    select: {
+      password: true,
+    },
+  });
+  if (!getUser)
+    return { success: false, message: "User with given name not found" };
+  const checkPassword = await compare(password, getUser.password);
+  if (checkPassword)
+    return {
+      success: false,
+      message: "You can't enter your old password again",
+    };
+  const newPassword = await hash(password, 10);
+  const updatePassword = await db.user.update({
+    where: {
+      username: username,
+    },
+    data: {
+      password: newPassword,
+    },
+  });
+  if (!updatePassword) return { success: false, message: "Database error" };
+  return { success: true, message: "Password reset successfully" };
+};
 export async function refreshAccessToken(email: string) {
   // Fetch the user from the database
   const user = await db.oAuthUser.findUnique({
