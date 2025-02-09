@@ -32,7 +32,7 @@ const BasicStoreForm = () => {
     "Daraa",
     "Alsuida",
     "Alkonitira",
-    "Deri-Alzor",
+    "Der-Alzor",
     "Al-raqaa",
     "Al-hasaka",
   ];

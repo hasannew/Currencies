@@ -125,3 +125,15 @@ model favorite {
   updatedAt   DateTime? @updatedAt
 
 }
+
+model issue {
+  id         String     @id @default(cuid())
+  email String? @db.VarChar(50)
+  topic String? @db.VarChar(50)
+  message String? @db.VarChar(50)
+  userid String @db.VarChar(50)
+  date  DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime? @updatedAt
+
+}

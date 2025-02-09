@@ -19,27 +19,24 @@ async function handler(req: NextRequest) {
        { status: 401 }
      );
    }
-  const {name, username} = await req.json()
+  const {email,topic,message,username} = await req.json()
   const users = await db.user.findMany({where:{
     username:username
   }})
-  console.log(name)
+  console.log(email)
   const userID = users[0].id
-  if(!name || !userID){
+  console.log(topic)
+  if(!email || !userID || !topic || !message){
     return NextResponse.json({message:'Invalid parameters'},{status:400})
   }
-     const ex = await db.favorite.findMany({where:{
-      userid:userID,
-      name:name
-     }})
-     if (ex.length!=0) {
-      return NextResponse.json({message:'currency already in favorites'},{status:400})
-     }
+    
      const now = new Date()
-      const refcite = await db.favorite.create({
+      const refcite = await db.issue.create({
         data:{
-        name:name,
+        email:email,
         userid:userID,
+        topic:topic,
+        message:message,
         date:now
         }
       })
