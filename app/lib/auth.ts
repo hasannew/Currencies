@@ -130,6 +130,7 @@ export const login = async (
     select: {
       password: true,
       //isVerified: true,
+      id:true,
       email: true,
       type: true,
     },
@@ -148,6 +149,7 @@ export const login = async (
       password: formData.password,
       email: userExists.email,
       type: userExists.type,
+      id: userExists.id
     },
     expires,
   });

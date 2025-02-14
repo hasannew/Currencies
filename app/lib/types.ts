@@ -5,6 +5,7 @@ export interface formData {
   password?: string;
   type: string;
   email: string;
+  id?: string;
   passwordC?: string;
   store_name?: string;
   state?: string;
