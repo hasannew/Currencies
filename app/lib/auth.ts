@@ -494,3 +494,30 @@ export const checkReCAPTCHA = async (
     return { success: false, message: "error" };
   }
 };
+
+
+export const refresh_session = async (
+  token:string
+): Promise<commonResponse> => {
+  if (!token) {
+    return {
+      success: false,
+      message: `token is not provided`,
+    };
+  }
+  const s = await decrypt(token);
+  console.log(s)
+  const expires = new Date(Date.now() + settings.sessionExpiracy);
+  const session = await encrypt({
+    user: {
+      username: s.user.username,
+      password: s.user.password,
+      email: s.user.email,
+      type: s.user.type,
+      id: s.user.id
+    },
+    expires,
+  });
+  (await cookies()).set("session", session, { expires, httpOnly: true });
+  return { success: true, message: "logged in",session:session };
+};
