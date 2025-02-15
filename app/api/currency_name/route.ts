@@ -3,7 +3,7 @@ import { db } from "@/app/lib/db";
 import { currency} from "@/app/lib/types";
 
 import { NextRequest, NextResponse } from "next/server";
-const get_last = async (currency:string) => {
+const get_last = async (currency:string,scale: 'Highest' | 'Lowest') => {
   let prices: Price[] = [];
   let i = 0;
   const now = new Date();
@@ -27,6 +27,9 @@ const get_last = async (currency:string) => {
           lte: endOfDay,
         },
       },
+      orderBy: {
+        purchase_price: scale === 'Highest' ? 'desc' : 'asc'
+      }
     });
     console.log(prices);
     i = i + 1;
@@ -35,7 +38,7 @@ const get_last = async (currency:string) => {
   }
   return prices;
 };
-const get_last_currencies = async (currency:string,state:string) => {
+const get_last_currencies = async (currency:string,state:string,scale: 'Highest' | 'Lowest') => {
     let currencies: currency[] = [];
     let i = 0;
     const now = new Date();
@@ -59,6 +62,9 @@ const get_last_currencies = async (currency:string,state:string) => {
             lte: endOfDay,
           },
         },
+        orderBy: {
+          purchase_price: scale === 'Highest' ? 'desc' : 'asc'
+        }
       });
       console.log(currencies);
       i = i + 1;
@@ -68,10 +74,10 @@ const get_last_currencies = async (currency:string,state:string) => {
     return currencies;
   };
 async function handler(req: NextRequest) {
-  const { currency, state } = await req.json();
+  const { currency, state, scale } = await req.json();
   
   console.log(currency);
-  if (!currency || !state) {
+  if (!currency || !state || !scale) {
     return NextResponse.json(
       { message: "Invalid parameters" },
       { status: 400 }
@@ -79,8 +85,8 @@ async function handler(req: NextRequest) {
   }
 
 
-    const prices = await get_last(currency);
-    const currencies = await get_last_currencies(currency,state)
+    const prices = await get_last(currency,scale);
+    const currencies = await get_last_currencies(currency,state,scale)
   
   console.log(prices);
   if (prices)
