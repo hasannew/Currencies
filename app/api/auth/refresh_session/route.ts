@@ -1,4 +1,4 @@
-import { getSession, login, refresh_session } from "@/app/lib/auth";
+import { getSession, refresh_session } from "@/app/lib/auth";
 
 import { NextRequest, NextResponse } from "next/server";
 
