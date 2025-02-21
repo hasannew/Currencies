@@ -9,6 +9,17 @@ const BasicStoreForm = () => {
     address: "",
     email: "",
     phone: "",
+    openTime: "09:00",
+    closeTime: "17:00",
+    workingDays: {
+      monday: true,
+      tuesday: true,
+      wednesday: true,
+      thursday: true,
+      friday: true,
+      saturday: false,
+      sunday: false,
+    }
   });
 
   const [errors, setErrors] = useState({
@@ -19,6 +30,8 @@ const BasicStoreForm = () => {
     email: "",
     phone: "",
     currency: "",
+    openTime: "",
+    closeTime: "",
   });
 
   const states = [
@@ -46,6 +59,8 @@ const BasicStoreForm = () => {
       email: "",
       phone: "",
       currency: "",
+      openTime: "",
+      closeTime: "",
     };
 
     if (!formData.storeName.trim()) {
@@ -85,7 +100,12 @@ const BasicStoreForm = () => {
     } else {
       newErrors.phone = "";
     }
-
+    if (!formData.openTime) {
+      newErrors.openTime = "Opening time is required";
+    }
+    if (!formData.closeTime) {
+      newErrors.closeTime = "Closing time is required";
+    }
     setErrors(newErrors);
     //console.log(Object.keys(errors).length)
     return (
@@ -106,6 +126,7 @@ const BasicStoreForm = () => {
       console.log("Form submitted:", formData);
       // Handle form submission here
     }
+ 
     const resp = await axios.post("/api/add_store", {
       name: formData.storeName,
       state: formData.state,
@@ -113,6 +134,9 @@ const BasicStoreForm = () => {
       address: formData.address,
       email: formData.email,
       phone: formData.phone,
+      opening_time:formData.openTime,
+      closing_time:formData.closeTime,
+      working_days:formData.workingDays
     });
     if (resp.status == 200) {
       showToast.success({
@@ -141,7 +165,18 @@ const BasicStoreForm = () => {
         formatted = `${cleaned.slice(0, 3)}-${cleaned.slice(3)}`;
       }
       setFormData((prev) => ({ ...prev, [name]: formatted }));
-    } else {
+    } else if (name.startsWith('workingDays.')) {
+      const day = name.split('.')[1];
+      setFormData(prev => ({
+        ...prev,
+        workingDays: {
+          ...prev.workingDays,
+          [day]: (e.target as HTMLInputElement).checked
+        }
+      }));
+    } 
+    
+    else {
       setFormData((prev) => ({ ...prev, [name]: value }));
     }
   };
@@ -330,6 +365,92 @@ const BasicStoreForm = () => {
           )}
         </div>
 
+     
+        {/* New Working Hours Section */}
+        <div style={{ marginTop: "20px" }}>
+          <h3 style={{ color: "black", marginBottom: "15px" }}>Working Hours</h3>
+          <div style={{ display: "flex", gap: "15px" }}>
+            <div style={{ flex: 1 }}>
+              <label
+                htmlFor="openTime"
+                style={{ display: "block", marginBottom: "5px", color: "black" }}
+              >
+                Opening Time:
+              </label>
+              <input
+                type="time"
+                id="openTime"
+                name="openTime"
+                value={formData.openTime}
+                onChange={handleInputChange}
+                style={{
+                  width: "100%",
+                  padding: "8px",
+                  border: errors.openTime ? "1px solid red" : "1px solid #ccc",
+                  borderRadius: "4px",
+                  color: "black",
+                }}
+              />
+              {errors.openTime && (
+                <span style={{ color: "red", fontSize: "14px" }}>
+                  {errors.openTime}
+                </span>
+              )}
+            </div>
+            <div style={{ flex: 1 }}>
+              <label
+                htmlFor="closeTime"
+                style={{ display: "block", marginBottom: "5px", color: "black" }}
+              >
+                Closing Time:
+              </label>
+              <input
+                type="time"
+                id="closeTime"
+                name="closeTime"
+                value={formData.closeTime}
+                onChange={handleInputChange}
+                style={{
+                  width: "100%",
+                  padding: "8px",
+                  border: errors.closeTime ? "1px solid red" : "1px solid #ccc",
+                  borderRadius: "4px",
+                  color: "black",
+                }}
+              />
+              {errors.closeTime && (
+                <span style={{ color: "red", fontSize: "14px" }}>
+                  {errors.closeTime}
+                </span>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Working Days Section */}
+        <div style={{ marginTop: "10px" }}>
+          <h3 style={{ color: "black", marginBottom: "15px" }}>Working Days</h3>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "10px" }}>
+            {Object.entries(formData.workingDays).map(([day, checked]) => (
+              <div key={day} style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                <input
+                  type="checkbox"
+                  id={`workingDays.${day}`}
+                  name={`workingDays.${day}`}
+                  checked={checked}
+                  onChange={handleInputChange}
+                />
+                <label
+                  htmlFor={`workingDays.${day}`}
+                  style={{ color: "black", textTransform: "capitalize" }}
+                >
+                  {day}
+                </label>
+              </div>
+            ))}
+          </div>
+        </div>
+
         <button
           type="submit"
           style={{
@@ -339,7 +460,7 @@ const BasicStoreForm = () => {
             border: "none",
             borderRadius: "4px",
             cursor: "pointer",
-            marginTop: "10px",
+            marginTop: "20px",
           }}
         >
           Submit

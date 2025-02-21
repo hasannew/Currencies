@@ -3,8 +3,8 @@ import { db } from "@/app/lib/db";
 import { NextRequest,NextResponse } from "next/server";
 async function handler(req: NextRequest) {
   
-  const {username,name, state,city,phone,email,address} = await req.json()
-  let name1,state1,city1,phone1,email1,address1;
+  const {username,name, state,city,phone,email,address,opening_time,closing_time,working_days} = await req.json()
+  let name1,state1,city1,phone1,email1,address1,opening_time1,closing_time1,working_days1;
 
   if(!username){
     return NextResponse.json({message:'Invalid parameters'},{status:400})
@@ -17,7 +17,7 @@ async function handler(req: NextRequest) {
   }
   const userID = users[0].id
  
-     let store,update;
+     let store,update,schedule,update2;
  
     if (users.length!=0)
     {
@@ -31,6 +31,36 @@ async function handler(req: NextRequest) {
         }
     }
       if(store) {
+        schedule = await db.schedule.findMany({where:{
+            storeid:store[0].id
+        }})
+        if(opening_time) {
+            opening_time1 = opening_time;
+        }
+        else {
+            opening_time1 = schedule[0].opening_time
+        }
+        if(closing_time) {
+            closing_time1 = closing_time;
+        }
+        else {
+            closing_time1 = schedule[0].closing_time
+        }
+        if(working_days) {
+            working_days1 = working_days
+        }
+        else {
+            working_days1 = {
+                sunday:schedule[0].sunday,
+                monday:schedule[0].monday,
+                tuesday:schedule[0].tuesday,
+                wednesday:schedule[0].wednesday,
+                thursday:schedule[0].thursday,
+                friday:schedule[0].friday,
+                saturday:schedule[0].saturday
+
+            }
+        }
         if(name) {
             name1 = name;
         }
@@ -67,7 +97,24 @@ async function handler(req: NextRequest) {
         else {
             phone1 = store[0].phone
         }
-      update = await db.store.update({where:{
+      update2 = await db.schedule.update({where:{
+        id:schedule[0].id
+      },
+    data:{
+    opening_time:opening_time1,
+    closing_time:closing_time1,
+    sunday:working_days1.sunday,
+    monday:working_days1.monday,
+    tuesday:working_days1.tuesday,
+    wednesday:working_days1.wednesday,
+    thursday:working_days1.thursday,
+    friday:working_days1.friday,
+    saturday:working_days1.saturday
+    }})
+    if (!update2) {
+        return NextResponse.json({message:'Error updating schedule'},{status:500})
+    }
+    update = await db.store.update({where:{
         id:store[0].id
       },
     data:{

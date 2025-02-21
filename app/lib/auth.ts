@@ -9,6 +9,7 @@ import {
   commonResponse,
   loginformData,
   Payload,
+  privilge,
 } from "./types";
 import settings from "@/config/settings";
 import { hash, compare } from "bcryptjs";
@@ -17,6 +18,7 @@ import axios from "axios";
 import { googleProvider, reCAPTCHA } from "@/config/config";
 //import { sendPasswordResetMail, sendVerificationMail } from "./mail";
 import { generateSecureKey } from "@/app/lib/utils";
+import { privilges } from "@prisma/client";
 
 // Auth configuration
 
@@ -122,19 +124,37 @@ export const login = async (
       message: `${formData.username ? "password" : "username"} is not provided`,
     };
   }
-  // Check the db for username
-  const userExists = await db.user.findUnique({
-    where: {
-      username: formData.username,
-    },
-    select: {
-      password: true,
-      //isVerified: true,
-      id:true,
-      email: true,
-      type: true,
-    },
-  });
+  let  userExists;
+  console.log(formData)
+  if (formData.email!='None') {
+    userExists = await db.user.findUnique({
+      where: {
+        username: formData.email,
+      },
+      select: {
+        password: true,
+        //isVerified: true,
+        id:true,
+        email: true,
+        type: true,
+      },
+    });
+  }
+  else {
+ // Check the db for username
+ userExists = await db.user.findUnique({
+  where: {
+    username: formData.username,
+  },
+  select: {
+    password: true,
+    //isVerified: true,
+    id:true,
+    email: true,
+    type: true,
+  },
+});
+  }
   if (!userExists) return { success: false, message: "User not Found" };
   const passwordCheck = await compare(formData.password, userExists.password);
   if (!passwordCheck)
@@ -169,7 +189,7 @@ export const register = async (formData: formData): Promise<commonResponse> => {
       message: "Either type,username,email or password is not provided",
     };
   }
-  let newStore,newPrev;
+  let newStore,newPrev,newSchedule,privilge,privilges:privilges[]=[];
   // Check the db for username
   const usernameExists = await db.user.findUnique({
     where: {
@@ -192,11 +212,30 @@ export const register = async (formData: formData): Promise<commonResponse> => {
   const hashedPassword = await hash(formData.password, 10);
   const token = generateSecureKey();
   const tokenExpiry = new Date(Date.now() + settings.tokenExpiracy);
+  const now = new Date();
   if (formData.type=='assistant') {
 newPrev = formData.privilges
+console.log(newPrev)
+  }
+
+  else if (formData.type=='store') {
+    newPrev = [{ name: 'Add Bulletins', details: 'Add New Bulletins' },
+    { name: 'Update Bulletins', details: 'Update Existing Bulletins' }]
   }
   else {
-    newPrev = "None"
+    newPrev = [{ name: 'Public', details: 'View Prices and Changes' }]
+  }
+  if (newPrev) {
+  for (let p of newPrev) {
+    privilge = await db.privilges.create({
+     data:{
+       name:p.name,
+       details:p.details,
+       date:now
+     }
+    })
+    privilges.push(privilge)
+   }
   }
   const newUser = await db.user.create({
     data: {
@@ -206,9 +245,17 @@ newPrev = formData.privilges
       token: token,
       tokenExpiracy: tokenExpiry,
       type: formData.type,
-      privilages:newPrev
+      privilages:{ connect: privilges.map((p) => ({ id: p.id })) }
     },
   });
+  for (let p of privilges) {
+    privilge = await db.privilges.update({
+      where :{id:p.id},
+     data:{
+       userID:newUser.id,
+     }
+    })
+   }
   if (!newUser) return { success: false, message: "Database error" };
   // send verification email
   /* const verifyEmail = await sendVerificationMail(
@@ -229,8 +276,23 @@ newPrev = formData.privilges
         userID: newUser.id,
       },
     });
+    newSchedule = await db.schedule.create({
+      data:{
+        storeid:newStore.id,
+        opening_time:'9:00',
+        closing_time:'16:00',
+        saturday:true,
+        sunday:true,
+        monday:true,
+        tuesday:true,
+        wednesday:true,
+        thursday:true,
+        friday:true
+      }
+    })
+  
   }
-  if (formData.type == "store" && !newStore)
+  if (formData.type == "store" && (!newStore || !newSchedule))
     return { success: false, message: "Database error" };
   return { success: true, message: "user registered" };
 };

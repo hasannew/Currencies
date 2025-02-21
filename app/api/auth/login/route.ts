@@ -3,7 +3,7 @@ import { getSession, login } from "@/app/lib/auth";
 import { NextRequest, NextResponse } from "next/server";
 
 async function handler(req: NextRequest) {
-  const { username,password} = await req.json();
+  const { username,password,email} = await req.json();
  
   console.log(username);
   if (!username || !password) {
@@ -12,10 +12,22 @@ async function handler(req: NextRequest) {
       { status: 400 }
     );
   }
- const form = {
-    username: username,
-    password: password,
- };
+  let form;
+  if (!email) {
+    form = {
+      username: username,
+      password: password,
+      email: 'None'
+   };
+  }
+  else {
+    form = {
+      username: username,
+      password: password,
+      email: email
+   };
+  }
+ console.log(form)
  const res = await login(form);
   
  const session = await getSession();

@@ -1,5 +1,9 @@
 import { JWTPayload } from "jose";
-
+export interface privilge {
+  name: string;
+  details: string;
+  
+}
 export interface formData {
   username: string;
   password?: string;
@@ -12,10 +16,11 @@ export interface formData {
   city?: string;
   address?: string;
   phone?: string;
-  privilges?: string;
+  privilges?: privilge[];
 }
 export interface loginformData {
   username: string;
+  email?:  string;
   password: string;
 }
 export type MsgType = "success" | "error" | "info";
@@ -66,7 +71,10 @@ export interface Item {
   id: string;
   [key: string]: string | number;
 }
-
+export interface privilges {
+  id: string;
+  [key: string]: string | number | Date;
+}
 export interface bulletin {
   id: string;
   [key: string]: string | number | Store | currency[] | Date;

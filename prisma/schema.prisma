@@ -12,11 +12,20 @@ model employees {
   first_name String?   @db.VarChar(50)
   last_name  String?   @db.VarChar(50)
   email      String?   @db.VarChar(100)
+  type             String    @default("assistant")
   createdAt  DateTime  @default(now())
   updatedAt  DateTime? @updatedAt
-  city       String?   @db.VarChar(100)
 }
-
+model privilges {
+  id         String    @id @default(cuid())
+  userID String?   @db.VarChar(50)
+  name  String?   @db.VarChar(50)
+  details      String?   @db.VarChar(100)
+  date           DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime? @updatedAt
+  User User[]
+}
 model User {
   id               String    @id @default(cuid())
   email            String    @unique
@@ -27,7 +36,7 @@ model User {
   isVerified       Boolean   @default(false)
   verificationDate DateTime?
   type             String    @default("customer")
-  privilages   String?
+  privilages       privilges[]
 }
 
 model OAuthUser {
@@ -57,6 +66,24 @@ model currency {
   bulletin       bulletin[]
 }
 
+model schedule {
+  id         String     @id @default(cuid())
+  userID     String?
+  storeid    String? @unique
+  opening_time String?
+  closing_time String?
+  sunday       Boolean?
+  monday       Boolean?
+  tuesday      Boolean?
+  wednesday    Boolean?
+  thursday     Boolean?
+  friday       Boolean?
+  saturday     Boolean?
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime?  @updatedAt
+  store   store?  @relation(fields: [storeid], references: [id])
+  
+}
 model store {
   id         String     @id @default(cuid())
   userID     String?
@@ -71,6 +98,7 @@ model store {
   createdAt  DateTime   @default(now())
   updatedAt  DateTime?  @updatedAt
   bulletin   bulletin[]
+  schedule schedule?
 }
 
 model offer {
