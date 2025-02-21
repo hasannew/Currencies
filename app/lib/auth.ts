@@ -9,7 +9,6 @@ import {
   commonResponse,
   loginformData,
   Payload,
-  privilge,
 } from "./types";
 import settings from "@/config/settings";
 import { hash, compare } from "bcryptjs";
@@ -189,7 +188,8 @@ export const register = async (formData: formData): Promise<commonResponse> => {
       message: "Either type,username,email or password is not provided",
     };
   }
-  let newStore,newPrev,newSchedule,privilge,privilges:privilges[]=[];
+  let newStore,newPrev,newSchedule,privilge;
+  const privilges:privilges[]=[];
   // Check the db for username
   const usernameExists = await db.user.findUnique({
     where: {
@@ -226,7 +226,7 @@ console.log(newPrev)
     newPrev = [{ name: 'Public', details: 'View Prices and Changes' }]
   }
   if (newPrev) {
-  for (let p of newPrev) {
+  for (const p of newPrev) {
     privilge = await db.privilges.create({
      data:{
        name:p.name,
@@ -248,7 +248,7 @@ console.log(newPrev)
       privilages:{ connect: privilges.map((p) => ({ id: p.id })) }
     },
   });
-  for (let p of privilges) {
+  for (const p of privilges) {
     privilge = await db.privilges.update({
       where :{id:p.id},
      data:{

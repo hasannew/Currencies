@@ -10,7 +10,7 @@ async function handler(req: NextRequest) {
     return NextResponse.json({message:'Invalid parameters'},{status:400})
   }
   const now = new Date();
-  let startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate()-1);
+  const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate()-1);
   const endOfDay = new Date(
     now.getFullYear(),
     now.getMonth(),
